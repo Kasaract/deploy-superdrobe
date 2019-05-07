@@ -33,11 +33,10 @@ body {
 .table-title .add-new {
     float: right;
     height: 30px;
-    font-weight: bold;
-    font-size: 12px;
+    /* font-weight: bold; */
+    font-size: 14px;
     text-shadow: none;
     min-width: 100px;
-    border-radius: 50px;
     line-height: 13px;
 }
 

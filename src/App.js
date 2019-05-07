@@ -12,6 +12,18 @@ class App extends Component {
     super(props);
 
     this.state = {
+      hotThresh: 75,
+      coldThresh: 40,
+      location: "Boston, MA",
+
+      dorm: "",
+
+      newHotThresh: 0,
+      newColdThresh: 0,
+      newLocation: "12345",
+
+      newDorm: "BURTON CONNER",
+
       wardrobe: [],
 
       newName: "",
@@ -38,13 +50,26 @@ class App extends Component {
     this.handleDeleteItem = this.handleDeleteItem.bind(this)
     this.handleEditItem = this.handleEditItem.bind(this)
     this.handleSendEdit = this.handleSendEdit.bind(this)
+    this.handleUpdateSettings = this.handleUpdateSettings.bind(this)
+    this.handleUpdateDorm = this.handleUpdateDorm.bind(this)
   }
 
   componentDidMount() {
-    axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
       .then(response => {
         this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"'))})
-        console.log(this.state.wardrobe[0])
+      })
+
+    axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_settings')
+      .then(response => {
+        // this.setState({wardrobe: )})
+        const settings = JSON.parse(response.data.replace(/'/g, '"'))[0]
+        this.setState({
+          coldThresh: settings["low_thresh"],
+          hotThresh: settings["high_thresh"],
+          location: settings["location"],
+          dorm: settings["dorm"]
+        })
       })
   }
 
@@ -54,7 +79,7 @@ class App extends Component {
 
   handleSubmitItem() {
     console.log("Item is being submitted")
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&maxUse=${this.state.newMaxNumWears}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&maxUse=${this.state.newMaxNumWears}`
     axios.post(url)
       .then(res => console.log(res))
       .then(() => {
@@ -68,7 +93,7 @@ class App extends Component {
       .catch(err => console.log(err))
     this.setState({ displayAddNew : false })
 
-    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     // .then(response => {
     //   this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"'))})
     // })
@@ -77,12 +102,12 @@ class App extends Component {
   
   handleDeleteItem(e) {
     console.log("Item is being deleted");
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=delete_items&item=${e.target.parentElement.getAttribute('id')}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=delete_items&item=${e.target.parentElement.getAttribute('id')}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
     
-    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     //   .then(response => {
     //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"'))})
     //     console.log("wardrobe rendered")
@@ -109,14 +134,14 @@ class App extends Component {
 
   handleSendEdit() {
     console.log("Item is being edited");
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&maxUse=${this.state.edit_max_use}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&maxUse=${this.state.edit_max_use}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
     
     this.setState({displayEditItem: false});
 
-    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     //   .then(response => {
     //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"')), })
     //     console.log("wardrobe rendered")
@@ -125,10 +150,42 @@ class App extends Component {
       window.location.reload();
   }
 
+  handleUpdateSettings() {
+    console.log("User settings being edited");
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.newColdThresh}&high_thresh=${this.state.newHotThresh}&location=${this.state.newLocation}&dorm=${this.state.dorm}`
+    axios.post(url)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+
+    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    //   .then(response => {
+    //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"')), })
+    //     console.log("wardrobe rendered")
+    //   })
+
+    window.location.reload();
+  }
+
+  handleUpdateDorm() {
+    console.log("Dorm being edited");
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.coldThresh}&high_thresh=${this.state.hotThresh}&location=${this.state.location}&dorm=${this.state.newDorm}`
+    axios.post(url)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+
+    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    //   .then(response => {
+    //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"')), })
+    //     console.log("wardrobe rendered")
+    //   })
+
+    window.location.reload();
+  }
+
   renderClothes() {
     return (
       this.state.wardrobe.map((item) =>
-        <tr name={item["name"]}>
+        <tr name={item["name"]} key={item["name"]}>
           <td>{item["name"]}</td>
           <td>{item["type"]}</td>
           <td>{item["occasion"]}</td>
@@ -154,13 +211,76 @@ class App extends Component {
         <Welcome />
 
         <div className="container">
+          <div className="form-group col-md" style={{paddingTop: '20px', marginBottom: '0px'}}>
+            <div style={{marginBottom: '10px'}}><b>Current Settings</b></div>
+            <div style={{marginBottom: '10px'}}>Hot Threshold: {this.state.hotThresh} F</div>
+            <div style={{marginBottom: '10px'}}>Cold Threshold: {this.state.coldThresh} F</div>
+            <div style={{marginBottom: '10px'}}>Location: {this.state.location}</div>
+            <div style={{marginBottom: '10px'}}>Dorm: {this.state.dorm}</div>
+          </div>
+        </div>
+        {/* Weather selection & Laundry availability */}
+        
+        <div className="container">
+          <div className="form-group col-md" style={{paddingTop: "40px"}}>
+            <label htmlFor="building">Location for Weather-Based Outfit Suggestions </label>
+            <input type="text" className="form-control" id="zipcode" name="zipcode" style={{marginBottom: "30px"}} required placeholder="Enter zip code" onChange={(e) => {this.setState({newLocation : e.target.value})}}></input>
+
+            <label htmlFor="building">Hot Temperature Threshold</label>
+            <input type="text" className="form-control" id="zipcode" name="zipcode" style={{marginBottom: "30px"}} required placeholder="Enter temperature you would consider hot" onChange={(e) => {this.setState({newHotThresh : e.target.value})}}></input>
+
+            <label htmlFor="building">Cold Temperature Threshold</label>
+            <input type="text" className="form-control" id="zipcode" name="zipcode" style={{marginBottom: "30px"}} required placeholder="Enter temperature you would consider cold" onChange={(e) => {this.setState({newColdThresh : e.target.value})}}></input>
+          </div>
+          <div className="col-auto">
+            <button type="submit" className="btn btn-primary mb-2" style={{fontSize: 15 +'px'}} onClick={this.handleUpdateSettings}>Submit</button>
+          </div>
+        </div>
+
+        <div className="container">
+          <div className="form-group col-md" style={{paddingTop: 40 + 'px'}}>
+            <label htmlFor="building">MIT Building for Laundry Machine Availability </label>
+            <select defaultValue="405 MEMORIAL DRIVE" className="custom-select mr-sm-2" id="inlineFormCustomSelect" onChange={(e) => {this.setState({newDorm : e.target.value})}}>
+              <option value="405 MEMORIAL DRIVE">405 MEMORIAL DRIVE</option>
+              <option value="70 AMHERST STREET">70 AMHERST STREET</option>
+              <option value="BAKER HOUSE">BAKER HOUSE</option>
+              <option value="BURTON-CONNER">BURTON-CONNER</option>
+              <option value="EAST CAMPUS">EAST CAMPUS</option>
+              <option value="EASTGATE">EASTGATE</option>
+              <option value="EDGERTON HOUSE LEFT">EDGERTON HOUSE LEFT</option>
+              <option value="EDGERTON HOUSE RIGHT">EDGERTON HOUSE RIGHT</option>
+              <option value="GREEN HALL">GREEN HALL</option>
+              <option value="MACGREGOR">MACGREGOR</option>
+              <option value="MASSEEH HALL">MASSEEH HALL</option>
+              <option value="MCCORMICK">MCCORMICK</option>
+              <option value="MCCORMICK ANNEX">MCCORMICK ANNEX</option>
+              <option value="NEW ASHDOWN">NEW ASHDOWN</option>
+              <option value="NEW HOUSE">NEW HOUSE</option>
+              <option value="NEXT HOUSE">NEXT HOUSE</option>
+              <option value="SIDNEY PACIFIC">SIDNEY PACIFIC</option>
+              <option value="SIMMONS HALL RM 346">SIMMONS HALL RM 346</option>
+              <option value="SIMMONS HALL RM 529">SIMMONS HALL RM 529</option>
+              <option value="SIMMONS HALL RM 676">SIMMONS HALL RM 676</option>
+              <option value="SIMMONS HALL RM 765">SIMMONS HALL RM 765</option>
+              <option value="SIMMONS HALL RM 845">SIMMONS HALL RM 845</option>
+              <option value="TANG HALL">TANG HALL</option>
+              <option value="WAREHOUSE">WAREHOUSE</option>
+              <option value="WESTGATE">WESTGATE</option>
+            </select>
+          </div>
+          <div className="col-auto">
+            <button type="submit" className="btn btn-primary mb-2" style={{fontSize: '15px'}} onClick={this.handleUpdateDorm}>Submit</button>
+          </div>
+        </div>
+
+        <div className="container">
           {/* <TableTitle handleEdit={this.displayEdit}/> */}
           <div className="table-title">
             <div className="table-title">
               <div className="row">
                 <div className="col-sm-8"><h2>Your Wardrobe</h2></div>
                 <div className="col-sm-4">
-                  <button type="button" className="btn btn-info add-new" style={{"cursor": "pointer", "marginTop": "30px"}} onClick={this.handleAddNew}><i className="fa fa-plus" ></i>
+                  <button type="button" className="btn btn-primary add-new" style={{"cursor": "pointer", "marginTop": "30px"}} onClick={this.handleAddNew}><i className="fa fa-plus" ></i>
                     Add New
                   </button>
                 </div>
