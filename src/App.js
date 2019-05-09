@@ -29,6 +29,7 @@ class App extends Component {
       newName: "",
       newType: "Top",
       newOccasion: "Casual",
+      newWeather: "Hot",
       newMaxNumWears: 0,
 
       displayAddNew: false,
@@ -41,6 +42,7 @@ class App extends Component {
       edit_name: "",
       edit_type: "",
       edit_occasion: "",
+      edit_weather: "",
       edit_curr_times_worn: 0,
       edit_max_use: 0
     }
@@ -79,7 +81,7 @@ class App extends Component {
 
   handleSubmitItem() {
     console.log("Item is being submitted")
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&maxUse=${this.state.newMaxNumWears}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&weather=${this.state.newWeather}&maxUse=${this.state.newMaxNumWears}`
     axios.post(url)
       .then(res => console.log(res))
       .then(() => {
@@ -87,6 +89,7 @@ class App extends Component {
           newName: "",
           newType: "Top",
           newOccasion: "Casual",
+          newWeather: "Hot",
           newMaxNumWears: 0
         })
       })
@@ -124,6 +127,7 @@ class App extends Component {
       edit_name: item["name"],
       edit_type: item["type"],
       edit_occasion: item["occasion"],
+      edit_weather: item["weather"],
       edit_curr_times_worn: item["curr_times_worn"],
       edit_max_use: item["max_use"]
     })
@@ -134,7 +138,7 @@ class App extends Component {
 
   handleSendEdit() {
     console.log("Item is being edited");
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&maxUse=${this.state.edit_max_use}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&weather=${this.state.edit_weather}&maxUse=${this.state.edit_max_use}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
@@ -189,6 +193,7 @@ class App extends Component {
           <td>{item["name"]}</td>
           <td>{item["type"]}</td>
           <td>{item["occasion"]}</td>
+          <td>{item["weather"]}</td>
           <td>{item["curr_times_worn"]}</td>
           <td>{item["max_use"]}</td>
           <td>
@@ -318,7 +323,13 @@ class App extends Component {
                           <option value="Formal">Formal</option>
                         </select>
                       </td>
-
+                      <td className="select" name="weather" id="weather">
+                        <select required value={this.state.edit_weather} onChange={(e) => {this.setState({edit_weather : e.target.value})}}>
+                          <option value="Hot">Hot</option>
+                          <option value="Moderate">Moderate</option>
+                          <option value="Cold">Cold</option>
+                        </select>
+                      </td>
                       <td>
                         {/* <input type="number" className="form-control" name="num-wears" id="num-wears" required/> */}
                         0
@@ -363,6 +374,13 @@ class App extends Component {
                                       <option value="Sport">Sport</option>
                                       <option value="Business">Business</option>
                                       <option value="Formal">Formal</option>
+                                    </select>
+                                  </td>
+                                  <td className="select" name="weather" id="weather">
+                                    <select required onChange={(e) => {this.setState({newWeather : e.target.value})}}>
+                                      <option selected value="Hot">Hot</option>
+                                      <option value="Moderate">Moderate</option>
+                                      <option value="Cold">Cold</option>
                                     </select>
                                   </td>
 
