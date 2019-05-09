@@ -12,9 +12,9 @@ class App extends Component {
     super(props);
 
     this.state = {
-      hotThresh: 75,
-      coldThresh: 40,
-      location: "Boston, MA",
+      hotThresh: "",
+      coldThresh: "",
+      location: "",
 
       dorm: "",
 
@@ -22,7 +22,7 @@ class App extends Component {
       newColdThresh: 0,
       newLocation: "12345",
 
-      newDorm: "BURTON CONNER",
+      newDorm: "405 MEMORIAL DRIVE",
 
       wardrobe: [],
 
@@ -57,12 +57,18 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
       .then(response => {
-        this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"'))})
+        const wardrobe = JSON.parse(response.data.replace(/'/g, '"'));
+        const sorted_wardrobe = wardrobe.filter(item => item["type"] == "Top")
+        sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Bottom"))
+        sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Shoes"))
+        sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Outerwear"))
+        this.setState({wardrobe: sorted_wardrobe})
       })
 
-    axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_settings')
+
+    axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_settings')
       .then(response => {
         // this.setState({wardrobe: )})
         const settings = JSON.parse(response.data.replace(/'/g, '"'))[0]
@@ -81,7 +87,7 @@ class App extends Component {
 
   handleSubmitItem() {
     console.log("Item is being submitted")
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&weather=${this.state.newWeather}&maxUse=${this.state.newMaxNumWears}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&weather=${this.state.newWeather}&maxUse=${this.state.newMaxNumWears}`
     axios.post(url)
       .then(res => console.log(res))
       .then(() => {
@@ -105,7 +111,7 @@ class App extends Component {
   
   handleDeleteItem(e) {
     console.log("Item is being deleted");
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=delete_items&item=${e.target.parentElement.getAttribute('id')}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=delete_items&item=${e.target.parentElement.getAttribute('id')}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
@@ -138,7 +144,7 @@ class App extends Component {
 
   handleSendEdit() {
     console.log("Item is being edited");
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&weather=${this.state.edit_weather}&maxUse=${this.state.edit_max_use}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&weather=${this.state.edit_weather}&maxUse=${this.state.edit_max_use}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
@@ -156,7 +162,7 @@ class App extends Component {
 
   handleUpdateSettings() {
     console.log("User settings being edited");
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.newColdThresh}&high_thresh=${this.state.newHotThresh}&location=${this.state.newLocation}&dorm=${this.state.dorm}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.newColdThresh}&high_thresh=${this.state.newHotThresh}&location=${this.state.newLocation}&dorm=${this.state.dorm}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
@@ -172,7 +178,7 @@ class App extends Component {
 
   handleUpdateDorm() {
     console.log("Dorm being edited");
-    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.coldThresh}&high_thresh=${this.state.hotThresh}&location=${this.state.location}&dorm=${this.state.newDorm}`
+    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.coldThresh}&high_thresh=${this.state.hotThresh}&location=${this.state.location}&dorm=${this.state.newDorm}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
