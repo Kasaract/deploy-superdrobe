@@ -7,6 +7,29 @@ import TableTitle from './Components/TableTitle';
 import TableColumns from './Components/TableColumns';
 import Footer from './Components/Footer';
 
+const generateSortFunction = (key) => {
+  return (itemA, itemB) => {
+
+    const linhsOrdering = {
+      "Top": "a",
+      "Bottom": "b",
+      "Shoes": "c",
+      "Outerwear": "d",
+    }
+
+    const aKey = linhsOrdering[itemA[key]] || itemA[key];
+    const bKey = linhsOrdering[itemB[key]] || itemB[key];
+    if (aKey === bKey){
+      return 0;
+    }
+    else if(aKey > bKey){
+      return 1;
+    }else{
+      return -1;
+    }
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -20,7 +43,7 @@ class App extends Component {
 
       newHotThresh: 0,
       newColdThresh: 0,
-      newLocation: "12345",
+      newLocation: "02215",
 
       newDorm: "405 MEMORIAL DRIVE",
 
@@ -60,10 +83,11 @@ class App extends Component {
     axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
       .then(response => {
         const wardrobe = JSON.parse(response.data.replace(/'/g, '"'));
-        const sorted_wardrobe = wardrobe.filter(item => item["type"] == "Top")
-        sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Bottom"))
-        sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Shoes"))
-        sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Outerwear"))
+        const sorted_wardrobe = wardrobe.sort(generateSortFunction("weather")).sort(generateSortFunction("occasion")).sort(generateSortFunction("type"));
+        // .filter(item => item["type"] == "Top")
+        // sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Bottom"))
+        // sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Shoes"))
+        // sorted_wardrobe.push(...wardrobe.filter(item => item["type"] == "Outerwear"))
         this.setState({wardrobe: sorted_wardrobe})
       })
 
