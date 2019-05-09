@@ -57,7 +57,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
       .then(response => {
         const wardrobe = JSON.parse(response.data.replace(/'/g, '"'));
         const sorted_wardrobe = wardrobe.filter(item => item["type"] == "Top")
@@ -68,7 +68,7 @@ class App extends Component {
       })
 
 
-    axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_settings')
+    axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_settings')
       .then(response => {
         // this.setState({wardrobe: )})
         const settings = JSON.parse(response.data.replace(/'/g, '"'))[0]
@@ -87,7 +87,7 @@ class App extends Component {
 
   handleSubmitItem() {
     console.log("Item is being submitted")
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&weather=${this.state.newWeather}&maxUse=${this.state.newMaxNumWears}`
+    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=add_items&name=${this.state.newName}&clothes_type=${this.state.newType}&occasion=${this.state.newOccasion}&weather=${this.state.newWeather}&maxUse=${this.state.newMaxNumWears}`
     axios.post(url)
       .then(res => console.log(res))
       .then(() => {
@@ -102,7 +102,7 @@ class App extends Component {
       .catch(err => console.log(err))
     this.setState({ displayAddNew : false })
 
-    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     // .then(response => {
     //   this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"'))})
     // })
@@ -111,12 +111,12 @@ class App extends Component {
   
   handleDeleteItem(e) {
     console.log("Item is being deleted");
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=delete_items&item=${e.target.parentElement.getAttribute('id')}`
+    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=delete_items&item=${e.target.parentElement.getAttribute('id')}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
     
-    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     //   .then(response => {
     //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"'))})
     //     console.log("wardrobe rendered")
@@ -144,14 +144,14 @@ class App extends Component {
 
   handleSendEdit() {
     console.log("Item is being edited");
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&weather=${this.state.edit_weather}&maxUse=${this.state.edit_max_use}`
+    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=edit_items&prev_name=${this.state.prev_edit_name}&name=${this.state.edit_name}&clothes_type=${this.state.edit_type}&occasion=${this.state.edit_occasion}&weather=${this.state.edit_weather}&maxUse=${this.state.edit_max_use}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
     
     this.setState({displayEditItem: false});
 
-    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     //   .then(response => {
     //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"')), })
     //     console.log("wardrobe rendered")
@@ -162,12 +162,12 @@ class App extends Component {
 
   handleUpdateSettings() {
     console.log("User settings being edited");
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.newColdThresh}&high_thresh=${this.state.newHotThresh}&location=${this.state.newLocation}&dorm=${this.state.dorm}`
+    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.newColdThresh}&high_thresh=${this.state.newHotThresh}&location=${this.state.newLocation}&dorm=${this.state.dorm}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
 
-    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     //   .then(response => {
     //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"')), })
     //     console.log("wardrobe rendered")
@@ -178,12 +178,12 @@ class App extends Component {
 
   handleUpdateDorm() {
     console.log("Dorm being edited");
-    const url = `http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.coldThresh}&high_thresh=${this.state.hotThresh}&location=${this.state.location}&dorm=${this.state.newDorm}`
+    const url = `https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=update_settings&low_thresh=${this.state.coldThresh}&high_thresh=${this.state.hotThresh}&location=${this.state.location}&dorm=${this.state.newDorm}`
     axios.post(url)
       .then(res => console.log(res))
       .catch(err => console.log(err))
 
-    // axios.get('http://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
+    // axios.get('https://608dev.net/sandbox/sc/nguyeng/superdrobe/superdrobebackend.py?type=get_user_items')
     //   .then(response => {
     //     this.setState({wardrobe: JSON.parse(response.data.replace(/'/g, '"')), })
     //     console.log("wardrobe rendered")
